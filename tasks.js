@@ -1,0 +1,167 @@
+/**
+ * GELOS TASK MANAGER - FULL LOGIC
+ */
+
+// --- 1. GLOBAL SELECTORS ---
+const searchInput = document.getElementById("search");
+const searchBtn = document.querySelector(".search-button");
+const taskList = document.getElementById("myUL");
+const filterBtns = document.querySelectorAll(".filter-btn");
+const newBtn = document.getElementById("newTaskBtn") || document.querySelector('[data-filter="new"]');
+
+// --- 2. THE NEW TASK LOGIC ---
+if (newBtn) {
+    newBtn.addEventListener("click", function(e) {
+        e.preventDefault();
+        
+        // Force view to "All" so the new task isn't hidden by an active filter
+        applyFilter("all");
+
+        const newId = "tsk" + Date.now();
+        const li = document.createElement('li');
+        li.className = "list-items";
+        li.setAttribute("data-status", "upcoming");
+
+        li.innerHTML = `
+            <input type="checkbox" id="${newId}" name="${newId}">
+            <strong class="editable-field" style="color:#a08463;">New Task Name</strong>
+            <p class="editable-field">Priority: Low</p>
+            <p class="editable-field">Staff: Assign Me</p>
+            <button aria-label="Edit" title="Edit" class="icon-button"><i class="fa fa-pencil fa-2x"></i></button>
+            <button aria-label="Delete" title="Delete" class="delete-button"><i class="fa fa-trash fa-2x"></i></button>
+        `;
+
+        // Add to the TOP of the list
+        taskList.prepend(li);
+        
+        attachTaskListeners(li); 
+        saveAllData(li);
+
+        // Instantly trigger edit mode so user can type
+        const editIcon = li.querySelector(".icon-button");
+        if (editIcon) editIcon.click();
+    });
+}
+
+// --- 3. TASK LISTENERS (Individual Task Logic) ---
+function attachTaskListeners(li) {
+    const editBtn = li.querySelector(".icon-button");
+    const deleteBtn = li.querySelector(".delete-button");
+    const checkbox = li.querySelector('input[type="checkbox"]');
+    const editableFields = li.querySelectorAll(".editable-field");
+    let isEditing = false;
+
+    // Toggle Edit Mode
+    editBtn.addEventListener("click", function() {
+        isEditing = !isEditing;
+        editableFields.forEach(field => {
+            field.contentEditable = isEditing;
+            field.style.outline = isEditing ? "2px dashed #077A99" : "none";
+            field.style.padding = isEditing ? "2px" : "0";
+        });
+
+        if (isEditing) {
+            editBtn.innerHTML = '<i class="fa fa-check fa-2x" style="color:green;"></i>';
+            editableFields[0].focus();
+        } else {
+            editBtn.innerHTML = '<i class="fa fa-pencil fa-2x"></i>';
+            saveAllData(li); // Save changes
+        }
+    });
+
+    // Delete Logic
+    deleteBtn.addEventListener("click", function() {
+        const id = li.querySelector("input").id;
+        localStorage.removeItem(`taskData_${id}`);
+        li.remove();
+    });
+
+    // Checkbox / Status Update
+    checkbox.addEventListener("change", function() {
+        li.setAttribute("data-status", checkbox.checked ? "completed" : "in-progress");
+        saveAllData(li);
+    });
+}
+
+// --- 4. FILTER & SEARCH LOGIC ---
+function applyFilter(category) {
+    // Update Button CSS
+    filterBtns.forEach(btn => {
+        if (btn.getAttribute("data-filter") === category) {
+            btn.className = "active-button filter-btn";
+        } else {
+            btn.className = "inactive-button filter-btn";
+        }
+    });
+
+    // Show/Hide Items
+    const currentItems = document.querySelectorAll(".list-items");
+    currentItems.forEach(li => {
+        const status = li.getAttribute("data-status");
+        li.style.display = (category === "all" || status === category) ? "" : "none";
+    });
+}
+
+function performSearch() {
+    const term = searchInput.value.toUpperCase();
+    const currentItems = document.querySelectorAll(".list-items");
+    currentItems.forEach(li => {
+        const text = li.innerText.toUpperCase();
+        li.style.display = text.includes(term) ? "" : "none";
+    });
+}
+
+// Attach filter button events
+filterBtns.forEach(btn => {
+    const category = btn.getAttribute("data-filter");
+    if (category !== "new") {
+        btn.addEventListener("click", () => applyFilter(category));
+    }
+});
+
+searchBtn.addEventListener("click", performSearch);
+searchInput.addEventListener("keyup", performSearch);
+
+// --- 5. STORAGE HELPERS ---
+function saveAllData(item) {
+    const input = item.querySelector("input");
+    if (!input) return;
+    
+    const id = input.id;
+    const data = {
+        task: item.querySelector("strong").innerText,
+        priority: item.querySelectorAll("p")[0].innerText,
+        staff: item.querySelectorAll("p")[1].innerText,
+        status: item.getAttribute("data-status"),
+        checked: input.checked
+    };
+    localStorage.setItem(`taskData_${id}`, JSON.stringify(data));
+}
+
+function loadAllFromStorage() {
+    taskList.innerHTML = ""; // Clear list
+    
+    Object.keys(localStorage).forEach(key => {
+        if (key.startsWith("taskData_")) {
+            const data = JSON.parse(localStorage.getItem(key));
+            const id = key.replace("taskData_", "");
+            
+            const li = document.createElement('li');
+            li.className = "list-items";
+            li.setAttribute("data-status", data.status || "upcoming");
+            li.innerHTML = `
+                <input type="checkbox" id="${id}" ${data.checked ? 'checked' : ''}>
+                <strong class="editable-field" style="color:#a08463;">${data.task}</strong>
+                <p class="editable-field">${data.priority}</p>
+                <p class="editable-field">${data.staff}</p>
+                <button class="icon-button"><i class="fa fa-pencil fa-2x"></i></button>
+                <button class="delete-button"><i class="fa fa-trash fa-2x"></i></button>
+            `;
+            taskList.appendChild(li);
+            attachTaskListeners(li);
+        }
+    });
+}
+
+// --- 6. INITIALIZE ---
+window.onload = loadAllFromStorage;

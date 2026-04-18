@@ -1,0 +1,223 @@
+nav {
+	display: flex; /* align the logo and the list */
+	align-items: center; /* vertically center the logo and text */
+	justify-content: flex-start; /* keeps them to the left */
+	position: sticky;
+	top: 0;
+	z-index: 1000; /* stays on top */
+	background-color: white; /* otherwise transparent */
+	padding: 10px 20px;
+	box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* slight shadow for depth */
+}
+
+
+nav ul {
+	display: flex; /* Make the list itself a flexbox to keep menu items in a row */
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	margin-left: 20px; /* add space between logo and menu */
+	font-family: sans-serif;
+	text-transform: uppercase;
+	font-size: 15px;
+}
+
+/* links */
+nav ul li a {
+	display: block;
+	color: black;
+	padding: 14px 16px;
+	text-decoration: none;
+}
+
+nav ul li a:hover {
+	border-bottom: 5px solid #077A99;
+}
+nav ul li a.active {
+	/* color: #077A99; Change text color
+	font-weight: bold; */
+	border-bottom: 5px solid #077A99;
+}
+html {
+	scroll-behavior: smooth;
+	font-family: sans-serif;
+}
+.content {
+	margin-left:auto;
+	margin-right:auto;
+	margin-bottom:20em;
+	width:75%;
+transform: translate(0%, -30%);
+	background-color: white;
+	padding-left: 2em;
+	padding-top: 0.3em;
+}
+#banner {
+	margin-left:auto;
+	margin-right:auto;
+	/*padding-left: 2em;*/
+}
+.list-items{
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 38px;
+}
+/*custom checkbox start*/
+/*https://stackoverflow.com/questions/4148499/how-to-style-a-checkbox-using-css*/
+input[type="checkbox"] {
+	appearance: none;
+	-webkit-appearance: none;
+	width: 30px;
+	height: 30px;
+	border: 2px solid #077A99;
+	border-radius: 4px;
+	background-color: white;
+	cursor: pointer;
+}
+
+input[type="checkbox"]:checked {
+	background-color: #077A99;
+}
+
+
+/* add a checkmark using CSS */
+input[type="checkbox"]:checked::after {
+	content: "✓";
+	color: white;
+	display: block;
+	text-align: center;
+	font-size: 32px;
+	line-height: 20px;
+}   
+/*custom checkbox end*/
+.active-button {
+	background: #077A99;
+	color: white;
+	padding: 18px;
+	border: none; 
+	border-radius: 8px;
+	font-weight: bold;
+	cursor: pointer;
+}
+.inactive-button {
+	color: #077A99;
+	padding: 17px;
+	border: 1px solid #077A99; 
+	border-radius: 8px;
+	font-weight: bold;
+	cursor: pointer;
+}
+.inactive-button:hover {
+background: #077A99;
+color: white;
+}
+.icon-button {
+	color: #077A99;
+	margin-bottom: 11px;
+	padding: 11px;
+	border: 1px solid #077A99; 
+	border-radius: 8px;
+	font-weight: bold;
+	cursor: pointer;
+}
+.icon-button:hover {
+background: #077A99;
+color: white;
+}
+.delete-button {
+	color: #077A99;
+	margin-bottom: 11px;
+	padding: 11px;
+	border: 1px solid #077A99; 
+	border-radius: 8px;
+	font-weight: bold;
+	cursor: pointer;
+}
+.delete-button:hover {
+background: #077A99;
+color: white;
+}
+.contact-fields {
+	padding: 17px;
+	border: 1px solid #a08463; 
+	border-radius: 8px;
+	font-weight: bold;
+}
+.search-container {
+    display: flex;
+    align-items: center; /* This forces them to align their centers vertically */
+    gap: 10px;           /* Replaces the need for messy margins */
+}
+.search-field {
+	padding: 17px;
+	border: 1px solid #a08463; 
+	border-radius: 8px;
+	margin: 11px;
+	font-weight: bold;
+	max-width: 460px; 
+}
+.search-button {
+	color: #077A99;
+	/*margin-bottom: 11px;*/
+	padding: 11px;
+	border: 1px solid #077A99; 
+	border-radius: 8px;
+	font-weight: bold;
+	cursor: pointer;
+}
+.search-button:hover {
+background: #077A99;
+color: white;
+}
+input[type="text"] {
+	width: 80%;
+}
+input[type="text"]:focus {
+	outline: 2px solid #077A99;
+	outline-offset: 2px;
+}
+textarea {
+	width: 80%;
+	height: 8rem;
+}
+textarea:focus {
+	outline: 2px solid #077A99;
+	outline-offset: 2px;
+}
+
+form label {
+	color: #077A99;
+	font-weight: bold;
+}
+footer {
+position: fixed;/**/
+	width: 100%;
+	bottom: 0;
+	border-top: 0.5em solid #077a99;
+	padding-top: 15px;
+	color: white;
+	background-color:#424754;
+}
+#footerdualblock {
+	display: flex; 
+	align-items: center; 
+	/*justify-content: flex-start;*/ 
+	position: sticky;
+	bottom: 0;
+	margin-left:auto;
+	margin-right:auto;
+	margin-bottom:10px;
+	width:55%;
+}
+#footercontact {
+	display:block;
+	align-content: center;
+	border-left: 0.2em solid #FFFFFF;
+	padding-left: 2em;
+}
+#AcknowledgeCountry {
+	margin: auto;
+	width:65%;
+	max-width: 800px;
+}
