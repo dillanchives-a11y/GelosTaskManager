@@ -1,3 +1,16 @@
+/*prevent padding from increasing rendered width*/
+*, *::before, *::after { 
+box-sizing: border-box; 
+}	
+html, body { 
+height: 100%; 
+margin: 0; 
+} 
+body { 
+display: flex; 
+flex-direction: column; 
+min-height: 100vh;
+		/* for the body to be at least viewport height */ }
 nav {
 	display: flex; /* align the logo and the list */
 	align-items: center; /* vertically center the logo and text */
@@ -6,13 +19,15 @@ nav {
 	top: 0;
 	z-index: 1000; /* stays on top */
 	background-color: white; /* otherwise transparent */
-	padding: 10px 20px;
+	padding: 10px 1rem;
 	box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* slight shadow for depth */
 }
 
 
 nav ul {
 	display: flex; /* Make the list itself a flexbox to keep menu items in a row */
+	gap: 8px;  
+	flex-wrap: wrap; /*Prevent nav overflow and allow wrapping on small screens*/
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
@@ -21,12 +36,32 @@ nav ul {
 	text-transform: uppercase;
 	font-size: 15px;
 }
+nav img.navlogo { 
+max-width: 160px; 
+height: auto; 
+}
+
+/*Collapse nav and reduce spacing on small screens*/
+@media (max-width: 600px) {
+  nav ul { 
+  gap: 8px; 
+  font-size: 13px; 
+  }
+  .list-items { 
+  gap: 16px; 
+  flex-wrap: wrap; 
+  }
+  .content { 
+  padding: 1rem; 
+  }
+}
 
 /* links */
 nav ul li a {
 	display: block;
 	color: black;
-	padding: 14px 16px;
+	padding: 10px 12px;
+	white-space: nowrap;
 	text-decoration: none;
 }
 
@@ -34,28 +69,30 @@ nav ul li a:hover {
 	border-bottom: 5px solid #077A99;
 }
 nav ul li a.active {
-	/* color: #077A99; Change text color
-	font-weight: bold; */
 	border-bottom: 5px solid #077A99;
+}
+/*Constrain images to the container*/
+img, svg { 
+max-width: 100%; 
+height: auto; 
+display: block; 
 }
 html {
 	scroll-behavior: smooth;
 	font-family: sans-serif;
 }
 .content {
-	margin-left:auto;
-	margin-right:auto;
-	margin-bottom:20em;
-	width:75%;
-transform: translate(0%, -30%);
-	background-color: white;
-	padding-left: 2em;
-	padding-top: 0.3em;
+width: 100%; 
+max-width: 900px; 
+margin: 0 auto; 
+padding: 1.5rem 1rem 2rem;
+background-color: white;
+
 }
 #banner {
 	margin-left:auto;
 	margin-right:auto;
-	/*padding-left: 2em;*/
+
 }
 .list-items{
 	display: flex;
@@ -159,7 +196,6 @@ color: white;
 }
 .search-button {
 	color: #077A99;
-	/*margin-bottom: 11px;*/
 	padding: 11px;
 	border: 1px solid #077A99; 
 	border-radius: 8px;
@@ -170,9 +206,12 @@ color: white;
 background: #077A99;
 color: white;
 }
-input[type="text"] {
-	width: 80%;
+/* Responsive */
+input[type="text"], textarea .search-field { 
+width: 80%; 
+max-width: 80%; 
 }
+
 input[type="text"]:focus {
 	outline: 2px solid #077A99;
 	outline-offset: 2px;
@@ -191,24 +230,23 @@ form label {
 	font-weight: bold;
 }
 footer {
-position: fixed;/**/
-	width: 100%;
-	bottom: 0;
-	border-top: 0.5em solid #077a99;
-	padding-top: 15px;
-	color: white;
-	background-color:#424754;
+width: 100%;
+border-top: 0.5em solid #077a99;
+padding: 15px 0 20px;
+color: white;
+background-color: #424754;
+position: relative;
+bottom: auto;
 }
 #footerdualblock {
-	display: flex; 
-	align-items: center; 
-	/*justify-content: flex-start;*/ 
-	position: sticky;
-	bottom: 0;
-	margin-left:auto;
-	margin-right:auto;
-	margin-bottom:10px;
-	width:55%;
+width: 100%;
+max-width: 900px;  
+margin: 0 auto;
+display: flex;
+gap: 1rem;
+align-items: center;
+padding: 0 1rem;
+flex-wrap: wrap;
 }
 #footercontact {
 	display:block;

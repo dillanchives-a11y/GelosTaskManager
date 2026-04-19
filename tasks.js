@@ -1,22 +1,19 @@
-/**
- * GELOS TASK MANAGER - FULL LOGIC
- */
-
-// --- 1. GLOBAL SELECTORS ---
+//Global Selectors
 const searchInput = document.getElementById("search");
-const searchBtn = document.querySelector(".search-button");
+const searchBtn = document.querySelector(".search-button"); // method returns a NodeList with the first element that matches a CSS selector. https://www.w3schools.com/jsref/met_document_queryselector.asp
 const taskList = document.getElementById("myUL");
-const filterBtns = document.querySelectorAll(".filter-btn");
+const filterBtns = document.querySelectorAll(".filter-btn"); // method returns all elements that matches a CSS selector(s). https://www.w3schools.com/jsref/met_document_queryselectorall.asp
 const newBtn = document.getElementById("newTaskBtn") || document.querySelector('[data-filter="new"]');
 
-// --- 2. THE NEW TASK LOGIC ---
+//Script for new task button
 if (newBtn) {
-    newBtn.addEventListener("click", function(e) {
-        e.preventDefault();
+    newBtn.addEventListener("click", function(event) {
+        event.preventDefault(); // to stop the double new task creation
         
         // Force view to "All" so the new task isn't hidden by an active filter
         applyFilter("all");
-
+        
+        // Create new task
         const newId = "tsk" + Date.now();
         const li = document.createElement('li');
         li.className = "list-items";
@@ -31,7 +28,7 @@ if (newBtn) {
             <button aria-label="Delete" title="Delete" class="delete-button"><i class="fa fa-trash fa-2x"></i></button>
         `;
 
-        // Add to the TOP of the list
+        // Add to the top of the list
         taskList.prepend(li);
         
         attachTaskListeners(li); 
@@ -43,7 +40,7 @@ if (newBtn) {
     });
 }
 
-// --- 3. TASK LISTENERS (Individual Task Logic) ---
+//Task listeners
 function attachTaskListeners(li) {
     const editBtn = li.querySelector(".icon-button");
     const deleteBtn = li.querySelector(".delete-button");
@@ -51,7 +48,7 @@ function attachTaskListeners(li) {
     const editableFields = li.querySelectorAll(".editable-field");
     let isEditing = false;
 
-    // Toggle Edit Mode
+    // Toggle edit mode
     editBtn.addEventListener("click", function() {
         isEditing = !isEditing;
         editableFields.forEach(field => {
@@ -61,7 +58,7 @@ function attachTaskListeners(li) {
         });
 
         if (isEditing) {
-            editBtn.innerHTML = '<i class="fa fa-check fa-2x" style="color:green;"></i>';
+            editBtn.innerHTML = '<i class="fa fa-check fa-2x"></i>';
             editableFields[0].focus();
         } else {
             editBtn.innerHTML = '<i class="fa fa-pencil fa-2x"></i>';
@@ -69,23 +66,23 @@ function attachTaskListeners(li) {
         }
     });
 
-    // Delete Logic
+    // Delete a task
     deleteBtn.addEventListener("click", function() {
         const id = li.querySelector("input").id;
         localStorage.removeItem(`taskData_${id}`);
         li.remove();
     });
 
-    // Checkbox / Status Update
+    // Checkbox status update
     checkbox.addEventListener("change", function() {
         li.setAttribute("data-status", checkbox.checked ? "completed" : "in-progress");
         saveAllData(li);
     });
 }
 
-// --- 4. FILTER & SEARCH LOGIC ---
+// Filter & search
 function applyFilter(category) {
-    // Update Button CSS
+    // Update button CSS
     filterBtns.forEach(btn => {
         if (btn.getAttribute("data-filter") === category) {
             btn.className = "active-button filter-btn";
@@ -94,10 +91,20 @@ function applyFilter(category) {
         }
     });
 
-    // Show/Hide Items
+    // Show or hide items
+    // Select all elements that represent tasks
     const currentItems = document.querySelectorAll(".list-items");
+    // Loop over every task element
     currentItems.forEach(li => {
+		// Read the task status
         const status = li.getAttribute("data-status");
+/*
+ * Decide whether to show or hide this task:
+ * If the selected category is "all", show every task.
+ * Otherwise, show only tasks whose status matches the selected category.
+ * Setting style.display to an empty string ("") uses the element's default/CSS display.
+ * Setting it to "none" hides the element.
+*/
         li.style.display = (category === "all" || status === category) ? "" : "none";
     });
 }
@@ -122,7 +129,8 @@ filterBtns.forEach(btn => {
 searchBtn.addEventListener("click", performSearch);
 searchInput.addEventListener("keyup", performSearch);
 
-// --- 5. STORAGE HELPERS ---
+//Storage helpers
+// https://www.javascripttutorial.net/web-apis/javascript-localstorage/
 function saveAllData(item) {
     const input = item.querySelector("input");
     if (!input) return;
@@ -135,6 +143,7 @@ function saveAllData(item) {
         status: item.getAttribute("data-status"),
         checked: input.checked
     };
+    // https://www.w3schools.com/js/js_json_stringify.asp
     localStorage.setItem(`taskData_${id}`, JSON.stringify(data));
 }
 
@@ -142,8 +151,11 @@ function loadAllFromStorage() {
     taskList.innerHTML = ""; // Clear list
     
     Object.keys(localStorage).forEach(key => {
+		// Only handle keys that follow the task naming convention
         if (key.startsWith("taskData_")) {
+			// Get the data from the JavaScript Object Notation string in local storage and convert it back into the JavaScript object.
             const data = JSON.parse(localStorage.getItem(key));
+            // Remove taskData_ to get the id
             const id = key.replace("taskData_", "");
             
             const li = document.createElement('li');
@@ -157,11 +169,12 @@ function loadAllFromStorage() {
                 <button class="icon-button"><i class="fa fa-pencil fa-2x"></i></button>
                 <button class="delete-button"><i class="fa fa-trash fa-2x"></i></button>
             `;
+             // Add the constructed li to the task list in the DOM
             taskList.appendChild(li);
             attachTaskListeners(li);
         }
     });
 }
 
-// --- 6. INITIALIZE ---
+// Get data from local storage
 window.onload = loadAllFromStorage;
