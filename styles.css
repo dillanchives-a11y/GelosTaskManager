@@ -83,7 +83,8 @@ html {
 }
 .content {
 width: 100%; 
-max-width: 900px; 
+max-width: 900px;
+flex: 1;   /* push the footer to the bottom */ 
 margin: 0 auto; 
 padding: 1.5rem 1rem 2rem;
 background-color: white;
@@ -235,8 +236,8 @@ border-top: 0.5em solid #077a99;
 padding: 15px 0 20px;
 color: white;
 background-color: #424754;
-position: relative;
-bottom: auto;
+/*position: relative;
+bottom: auto;*/
 }
 #footerdualblock {
 width: 100%;
